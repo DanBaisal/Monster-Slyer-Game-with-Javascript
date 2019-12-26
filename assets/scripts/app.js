@@ -29,7 +29,50 @@ function writeToLog(ev, val, monsterHealth, playerHealth) {
             finalMonsterHealth: monsterHealth,
             finalPlayerHealth: playerHealth
     };
-    if (ev === LOG_EVENT_PLAYER_ATTACK) {
+
+    switch (ev) {
+        case LOG_EVENT_PLAYER_ATTACK:
+            logEntry.target = 'MONSTER';
+            break;
+        case LOG_EVENT_PLAYER_STRONG_ATTACK:
+            logEntry = {
+                event: ev,
+                value: val,
+                target: 'MONSTER',
+                finalMonsterHealth: monsterHealth,
+                finalPlayerHealth: playerHealth
+        };
+            break;
+        case LOG_EVENT_MONSTER_ATTACK:
+            logEntry = {
+                event: ev,
+                value: val,
+                target: 'PLAYER',
+                finalMonsterHealth: monsterHealth,
+                finalPlayerHealth: playerHealth
+            };
+            break;
+        case LOG_EVENT_PLAYER_HEAL:
+            logEntry = {
+                event: ev,
+                value: val,
+                target: 'PLAYER',
+                finalMonsterHealth: monsterHealth,
+                finalPlayerHealth: playerHealth
+            };
+            break;
+        case LOG_EVENT_GAME_OVER:
+            logEntry = {
+                event: ev,
+                value: val,
+                finalMonsterHealth: monsterHealth,
+                finalPlayerHealth: playerHealth
+            };
+            break;
+            default:
+                logEntry = {};
+    }
+    /* if (ev === LOG_EVENT_PLAYER_ATTACK) {
         logEntry.target = 'MONSTER'; 
     } else if (ev === LOG_EVENT_PLAYER_STRONG_ATTACK) {
         logEntry = {
@@ -62,7 +105,7 @@ function writeToLog(ev, val, monsterHealth, playerHealth) {
             finalMonsterHealth: monsterHealth,
             finalPlayerHealth: playerHealth
         };
-    }
+    } */
     battleLog.push(logEntry);
 }
 
@@ -115,15 +158,16 @@ function endRound() {
 }
 
 function attackMonster(mode) {
-    let maxDamage;
-    let logEvent;
-    if (mode === 'Attack') {
+    let maxDamage = mode === 'Attack' ? attackValue : strongAttackValue;
+    let logEvent = mode === 'Attack' ? LOG_EVENT_PLAYER_ATTACK : LOG_EVENT_PLAYER_STRONG_ATTACK;
+   /* if (mode === 'Attack') {
         maxDamage = attackValue;
         logEvent = LOG_EVENT_PLAYER_ATTACK;
     } else if (mode === 'strongAttack') {
         maxDamage = strongAttackValue;
         logEvent = LOG_EVENT_PLAYER_STRONG_ATTACK;
-    }
+    } 
+    */
     const damage = dealMonsterDamage(maxDamage);
     currentMonsterHealth = currentMonsterHealth - damage; //currentMonsterHealth -= damage
     writeToLog(
@@ -168,3 +212,19 @@ attackBtn.addEventListener('click', attackHandler);
 strongAttackBtn.addEventListener('click', strongAttackHandler);
 healBtn.addEventListener('click', healPlayerHandler);
 logBtn.addEventListener('click', printLogHandler);
+
+/*
+const userName = 'Max';
+const altName = '';
+console.log(userName === 'Max'); // generates and prints a boolean => true
+console.log(userName); // wasn't touched, still is a string => 'Max'
+ 
+console.log(userName || null); // userName is truthy and therefore returned by || => 'Max'
+console.log(altName || 'Max'); // altName is falsy (empty string), hence 'Max' is returned => 'Max'
+console.log(altName || ''); // both altName and '' are falsy but if the first operand is falsy, the second one is always returned => ''
+console.log(altName || null || 'Anna'); // altName and null are falsy, 'Anna' is returned => 'Anna'
+ 
+console.log(userName && 'Anna'); // userName is truthy, hence second (!) value is returned => 'Anna'
+console.log(altName && 'Anna'); // altName is falsy, hence first value is returned => ''
+console.log(userName && ''); // userName is truthy, hence second value is returned => ''
+*/
