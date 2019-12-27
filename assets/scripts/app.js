@@ -19,6 +19,7 @@ let currentMonsterHealth = chosenMaxLife;
 let currentPlayerHealth = chosenMaxLife;
 let hasBonusLife = true;
 let battleLog = [];
+let lastLoggedEntry;
 
 adjustHealthBars(chosenMaxLife);
 
@@ -205,7 +206,21 @@ function healPlayerHandler() {
 }
 
 function printLogHandler() {
-    console.log(battleLog);
+    /*for (i = 0; i < battleLog.length; i++) {
+        console.log(battleLog[i])
+    } */
+    let i = 0;
+    for (const logElement of battleLog) {
+        if ((!lastLoggedEntry && lastLoggedEntry !== 0) || lastLoggedEntry < i) {
+            console.log(`#${i}`);
+        for (const key in logElement) {
+            console.log(`${key} => ${logElement[key]}`);
+            }
+        lastLoggedEntry = i;
+        break;
+        }
+        i++;
+    } 
 }
 
 attackBtn.addEventListener('click', attackHandler);
